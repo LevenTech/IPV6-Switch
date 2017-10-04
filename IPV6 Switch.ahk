@@ -13,6 +13,11 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;-----------------------------------|
 
 
+; INITIALIZE STATE VAR
+;----------------------
+InitialState = 0
+
+
 ; TRAY ICON CONFIGURATION
 ;-------------------------
 Menu, Tray, Tip, IPV6 Switch by LevenTech
@@ -20,12 +25,34 @@ Menu, Tray, Icon, 6_Question.ico, 1, 0
 
 Menu, Tray, NoStandard
 Menu, Tray, Add, Instructions, MyHelp
-;Menu, Tray, Add
-;Menu, Tray, Add, Edit Script, EditScript
-;Menu, Tray, Add, Exit Script to Recompile, ReloadScript
+Menu, Tray, Add
+Menu, Tray, Add, Edit Script, EditScript
+Menu, Tray, Add, Exit Script to Recompile, ReloadScript
 Menu, Tray, Default, Instructions 
 Menu, Tray, Standard
 
+If (InitialState)
+{
+	Goto, EnableIPV6
+} else
+{
+	Goto, DisableIPV6
+}
+Return
+
+EditScript: 
+	message = 
+	Run, notepad++.exe "D:\OneDrive\LevenTech\GitHub\ExplorerTools\ExplorerTools.ahk"
+Return
+
+ReloadScript: 
+	SetTimer, ExitMe, -100
+	Run, "C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe"
+Exit
+
+ExitMe: 
+	ExitApp
+	
 HideTrayTip() {
     TrayTip  ; Attempt to hide it the normal way.
     if SubStr(A_OSVersion,1,3) = "10." {
@@ -34,10 +61,6 @@ HideTrayTip() {
         Menu Tray, Icon
     }
 }
-
-; INITIALIZE STATE VAR
-;----------------------
-IsIPV6on = 
 
 
 ; ONGOING BACKGROUND CODE
