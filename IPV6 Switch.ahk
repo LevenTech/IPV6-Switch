@@ -21,7 +21,7 @@ InitialState = 0
 ; TRAY ICON CONFIGURATION
 ;-------------------------
 Menu, Tray, Tip, IPV6 Switch by LevenTech
-Menu, Tray, Icon, 6_Question.ico, 1, 0
+Menu, Tray, Icon, %A_ScriptDir%\Icons\IPV6_OFF.ico, 1, 0
 
 Menu, Tray, NoStandard
 Menu, Tray, Add, Instructions, MyHelp
@@ -42,7 +42,7 @@ Return
 
 EditScript: 
 	message = 
-	Run, notepad++.exe "D:\OneDrive\LevenTech\GitHub\ExplorerTools\ExplorerTools.ahk"
+	Run, notepad++.exe "%A_ScriptDir%\IPV6` Switch.ahk"
 Return
 
 ReloadScript: 
@@ -99,7 +99,7 @@ DisableIPV6:
 	{
 		Run, C:\Program` Files\NVSPBind\nvspbind.exe -d {9A1305B7-B62B-460C-B5ED-A6A13AE0C343} ms_tcpip6
 		IsIPV6on = 0
-		Menu, Tray, Icon, 6X.ico, 1, 0
+		Menu, Tray, Icon, %A_ScriptDir%\Icons\IPV6_OFF.ico, 1, 0
 		TrayTip, IPv6 OFF, Disabled IPv6 on Ethernet2, 17
 	}
 Return
@@ -113,7 +113,7 @@ EnableIPV6:
 	{
 		Run, C:\Program` Files\NVSPBind\nvspbind.exe -e {9A1305B7-B62B-460C-B5ED-A6A13AE0C343} ms_tcpip6
 		IsIPV6on = 1
-		Menu, Tray, Icon, 6_Circle.ico, 1, 0
+		Menu, Tray, Icon, %A_ScriptDir%\Icons\IPV6_ON.ico, 1, 0
 		TrayTip, IPv6 ON, Enabled IPv6 on Ethernet2, 17
 	}
 	Goto, MyLoop
