@@ -24,52 +24,55 @@ Menu, Tray, Tip, IPV6 Switch by LevenTech
 Menu, Tray, Icon, %A_ScriptDir%\Icons\IPV6_OFF.ico, 1, 0
 
 Menu, Tray, NoStandard
+
+
+
 Menu, Tray, Add, Instructions, MyHelp
+Menu, Tray, Add, Toggle IPV6, ToggleIPV6
 Menu, Tray, Add
 Menu, Tray, Add, Edit Script, EditScript
-Menu, Tray, Add, Exit Script to Recompile, ReloadScript
-Menu, Tray, Default, Instructions 
 Menu, Tray, Standard
+
+Menu, Tray, Default, Toggle IPV6 
 
 If (InitialState)
 {
+	Menu, Tray, Rename, Toggle IPV6, Enable IPV6
 	Goto, EnableIPV6
 } else
 {
+	Menu, Tray, Rename, Toggle IPV6, Disable IPV6
 	Goto, DisableIPV6
 }
+
 Return
+
+RefreshTrayTip() {
+    Menu Tray, NoIcon
+    Menu Tray, Icon
+	Return
+}
+MyTrayTip(title, text, options=0) {
+	RefreshTrayTip()
+	TrayTip %title%, %text%, , %options% 
+	RefreshTrayTip()
+	Return
+}
 
 EditScript: 
 	message = 
 	Run, notepad++.exe "%A_ScriptDir%\IPV6` Switch.ahk"
 Return
 
-ReloadScript: 
-	SetTimer, ExitMe, -100
-	Run, "C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe"
-Exit
-
-ExitMe: 
-	ExitApp
-	
-HideTrayTip() {
-    TrayTip  ; Attempt to hide it the normal way.
-    if SubStr(A_OSVersion,1,3) = "10." {
-        Menu Tray, NoIcon
-        Sleep 200  ; It may be necessary to adjust this sleep.
-        Menu Tray, Icon
-    }
-}
 
 
 ; ONGOING BACKGROUND CODE
 ;-------------------------
-MyLoop:
+CheckForPlex:
 	While, Not IsIPV6on=0
 	{
 		WinWaitActive, ahk_exe chrome_plex.exe
-		TrayTip, IPv6 is ON, Disable Before Refreshing Metdata, 18
+		MyTrayTip("IPv6 is ON","Disable Before Refreshing Metdata",18)
 		Sleep, 30000
 	}
 Return
@@ -90,46 +93,42 @@ MyHelp:
 Return
 
 
-^!F6::
 DisableIPV6:
 	if not A_IsAdmin 
 	{
-		TrayTip, Can't Disable IPV6, Need Admin Privileges
+		MyTrayTip("Can't Disable IPV6","Need Admin Privileges")
 	} else
 	{
 		Run, C:\Program` Files\NVSPBind\nvspbind.exe -d {9A1305B7-B62B-460C-B5ED-A6A13AE0C343} ms_tcpip6
 		IsIPV6on = 0
 		Menu, Tray, Icon, %A_ScriptDir%\Icons\IPV6_OFF.ico, 1, 0
-		TrayTip, IPv6 OFF, Disabled IPv6 on Ethernet2, 17
+		Menu, Tray, Rename, Disable IPV6, Enable IPV6
+		MyTrayTip("IPv6 OFF","Disabled IPv6 on Ethernet2",17)
 	}
 Return
 
-^+F6::
 EnableIPV6:
 	if not A_IsAdmin 
 	{
-		TrayTip, Can't Enable IPV6, Need Admin Privileges
+		MyTrayTip("Can't Enable IPV6","Need Admin Privileges")
 	} else
 	{
 		Run, C:\Program` Files\NVSPBind\nvspbind.exe -e {9A1305B7-B62B-460C-B5ED-A6A13AE0C343} ms_tcpip6
 		IsIPV6on = 1
 		Menu, Tray, Icon, %A_ScriptDir%\Icons\IPV6_ON.ico, 1, 0
-		TrayTip, IPv6 ON, Enabled IPv6 on Ethernet2, 17
+		Menu, Tray, Rename, Enable IPV6, Disable IPV6
+		MyTrayTip("IPv6 ON","Enabled IPv6 on Ethernet2",17)
 	}
-	Goto, MyLoop
+	SetTimer, CheckForPlex, -100
 Return
 
-^F6::
+ToggleIPV6:
 	if (IsIPV6on = 1)
 	{
 		Goto, DisableIPV6
-	} else if (IsIPV6on = 0)
-	{
-		Goto, EnableIPV6
 	} else 
 	{
-		TrayTip, Can't Toggle IPV6, Use Ctrl+Alt or Ctrl+Shift Once
+		Goto, EnableIPV6
 	}
 Return
-
 
