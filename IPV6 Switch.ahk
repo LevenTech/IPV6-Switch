@@ -8,7 +8,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;                                   |
 ; IPV6 Switch by LevenTech          |
 ;                                   |
-; Version 1.0 (9-29-17)             |
+; Version 1.5 (10-25-17)            |
 ;                                   |
 ;-----------------------------------|
 
